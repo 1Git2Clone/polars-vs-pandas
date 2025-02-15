@@ -7,7 +7,7 @@
 [License Icon]: https://img.shields.io/badge/license-MIT-blue.svg
 [LICENSE]: LICENSE
 
-A pretty simple benchmark of Pandas vs Polars. Nothing that interesting.
+CSV heading parsing comparison for a 1 million line randomly generated CSV file.
 
 ## Table of contents
 
