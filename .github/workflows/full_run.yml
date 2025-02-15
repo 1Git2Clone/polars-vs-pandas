@@ -1,0 +1,45 @@
+name: Full Run
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: full
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Rust script
+        run: cargo run --verbose --all-features --release
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.13
+
+      - name: Install dependencies
+        working-directory: pl_vs_pd
+        run: |
+          python -m pip install --upgrade pip
+          pip install uv
+          uv pip install pyright --system
+
+      - name: Set up virtual environment
+        working-directory: pl_vs_pd
+        run: |
+          uv venv
+
+      - name: Run Python Script in `pl_vs_pd/src/main.py`
+        working-directory: pl_vs_pd/
+        run: |
+          source .venv/bin/activate
+          if [ -f requirements.txt ]; then uv pip install -r requirements.txt; fi
+          if [ -f pyproject.toml ]; then uv pip install -r pyproject.toml; fi
+          uv run python ./src/main.py
